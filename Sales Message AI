@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Message AI</title>
+
+<style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:#0f172a;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:420px;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+textarea, select, button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:none;
+}
+
+textarea{
+  height:80px;
+}
+
+button{
+  background:#22c55e;
+  color:#fff;
+  font-weight:bold;
+}
+
+.reply{
+  background:#1e293b;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:8px;
+}
+
+.copy{
+  background:#f59e0b;
+  flex:1;
+}
+
+.wa{
+  background:#25d366;
+  flex:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>💼 Sales Message AI</h1>
+
+<textarea id="msg" placeholder="Paste message..."></textarea>
+
+<select id="type">
+  <option value="auto">Auto Detect</option>
+  <option value="dm">DM Start</option>
+  <option value="pricing">Pricing</option>
+  <option value="followup">Follow Up</option>
+  <option value="closing">Closing</option>
+</select>
+
+<button onclick="generate()">Generate Reply</button>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+function random(arr){
+  return arr.sort(()=>0.5-Math.random()).slice(0,3);
+}
+
+function detectType(msg){
+  if(msg.includes("price") || msg.includes("kitna") || msg.includes("₹")) return "pricing";
+  if(msg.includes("hello") || msg.includes("hi")) return "dm";
+  if(msg.includes("?" )) return "followup";
+  return "closing";
+}
+
+function generate(){
+
+let msg = document.getElementById("msg").value.toLowerCase();
+let type = document.getElementById("type").value;
+
+if(type === "auto"){
+  type = detectType(msg);
+}
+
+let replies = [];
+
+if(type === "dm"){
+replies = [
+"Hey 👋 thanks for reaching out!",
+"Hi 😊 kaise help kar sakta hu?",
+"Hello! Batao kya chahiye?"
+];
+}
+
+if(type === "pricing"){
+replies = [
+"Price ₹499 hai 👍 interested ho?",
+"Sirf ₹499 me mil jayega 😊",
+"Affordable hai — ₹499 only 💯"
+];
+}
+
+if(type === "followup"){
+replies = [
+"Still interested? 😊",
+"Update chahiye kya?",
+"Batana agar lena ho 👍"
+];
+}
+
+if(type === "closing"){
+replies = [
+"Chalo confirm karein? 🚀",
+"Aap ready ho toh start karte hain 👍",
+"Deal close karein? 😊"
+];
+}
+
+show(random(replies));
+}
+
+function show(arr){
+
+let out = document.getElementById("output");
+out.innerHTML = "";
+
+arr.forEach(r=>{
+  out.innerHTML += `
+  <div class="reply">
+    ${r}
+    <div class="actions">
+      <button class="copy" onclick="copyText('${r}')">Copy</button>
+      <button class="wa" onclick="sendWA('${r}')">WhatsApp</button>
+    </div>
+  </div>
+  `;
+});
+}
+
+function copyText(text){
+navigator.clipboard.writeText(text);
+alert("Copied!");
+}
+
+function sendWA(text){
+window.open("https://wa.me/?text="+encodeURIComponent(text));
+}
+
+</script>
+
+</body>
+</html>
